@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+</head>
+<body>
+    <style>
+        .logo{
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        h2{
+            padding: 10px;
+            border: 1px solid black;
+            font-size: 36px;
+            text-shadow: 0.1em 0.1em 0.2em black;
+            box-shadow: 10px 10px 10px 0px rgba(0,0,0,0.75);
+        }
+       .center{
+            display: flex;
+           justify-content: center;           
+        }
+        .child{
+            margin-top: 20px;
+        }        
+    </style>
+
+    <div class="logo">
+        <h2>SNOHW GAMER</h2>
+    </div>
+    <div class="center">
+        <div class="child">
+        <canvas id="stage" width="400" height="400"></canvas>
+        </div>
+    </div>
+    <script>
+        window.onload = function(){
+            var stage = document.getElementById('stage');
+            var ctx = stage.getContext("2d");
+            document.addEventListener("keydown", keyPush);
+
+            setInterval(game, 100);
+
+            const vel = 1;
+
+            var vx = vy = 0;
+            var px = 10;
+            var py = 15;
+            var tp = 20;
+            var qp = 20;
+            var ax = ay = 15;
+
+            var trail = [];
+            tail = 5;
+
+            function game(){
+
+                px += vx;
+                py += vy;
+                if (px < 0){
+                    px = qp - 1;
+                }
+                if (px >= qp){
+                    px = 0;
+                }
+                if (py < 0){
+                    py = qp - 1;
+                }
+                if (py >= qp){
+                    py = 0;
+                }
+
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, stage.width, stage.height);
+
+                ctx.fillStyle = "red";
+                ctx.fillRect(ax * tp, ay * tp, tp, tp);
+
+                ctx.fillStyle = "gray";
+                for (var i = 0; i < trail.length; i++){
+                    ctx.fillRect(trail[i].x * tp, trail[i].y * tp, tp, tp);
+
+                    if (trail[i].x == px && trail[i].y == py){
+                        vx = vy = 0;
+                        tail = 5;
+                    }
+                }
+
+                trail.push({x: px, y: py});
+                while (trail.length > tail){
+                    trail.shift();
+                }
+
+                if (ax == px && ay == py){
+                    tail++;
+                    ax = Math.floor(Math.random() * qp);
+                    ay = Math.floor(Math.random() * qp);
+                }
+            }
+
+            function keyPush(event){
+                switch (event.keyCode) {
+                    case 37: //left
+                        if (vx !== 1) { // Evita que vá para a direita
+                            vx = -vel;
+                            vy = 0;
+                        }
+                        break;
+                    case 38: //up
+                        if (vy !== 1) { // Evita que vá para baixo
+                            vx = 0;
+                            vy = -vel;
+                        }
+                        break;
+                    case 39: //right
+                        if (vx !== -1) { // Evita que vá para a esquerda
+                            vx = vel;
+                            vy = 0;
+                        }
+                        break;
+                    case 40: //down
+                        if (vy !== -1) { // Evita que vá para cima
+                            vx = 0;
+                            vy = vel;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
